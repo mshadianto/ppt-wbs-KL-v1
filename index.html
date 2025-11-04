@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whistleblowing System - BPKH RI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            background: #0f172a;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, #1e3c72 0%, #2a5298 25%, #f59e0b 50%, #1e3c72 75%, #2a5298 100%);
+            animation: gradientShift 20s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(-10%, 10%) rotate(90deg); }
+            50% { transform: translate(-20%, 0%) rotate(180deg); }
+            75% { transform: translate(-10%, -10%) rotate(270deg); }
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(245, 158, 11, 0.2);
+            border-radius: 50%;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Logo Header */
+        .logo-header {
+            position: fixed;
+            top: 20px;
+            left: 40px;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: slideInLeft 1s ease;
+        }
+
+        .logo-header img {
+            height: 70px;
+            filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4));
+            transition: all 0.3s;
+        }
+
+        .logo-header img:hover {
+            transform: scale(1.15) rotate(-5deg);
+            filter: drop-shadow(0 12px 24px rgba(245, 158, 11, 0.6));
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Slides */
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transform: translateX(100%) scale(0.8);
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            padding: 60px 80px;
+            overflow: hidden;
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .slide.active::before {
+            left: 100%;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+            z-index: 10;
+        }
+
+        .slide.prev {
+            transform: translateX(-100%) scale(0.8);
+        }
+
+        /* Cover Slide */
+        .cover-slide {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #f59e0b 100%);
+            color: white;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cover-slide::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.5); opacity: 0.2; }
+        }
+
+        .cover-slide .content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cover-slide h1 {
+            font-size: 90px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            letter-spacing: 4px;
+            animation: titleBounce 1s ease;
+        }
+
+        @keyframes titleBounce {
+            0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+            50% { transform: scale(1.1) rotate(5deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .cover-slide .subtitle {
+            font-size: 34px;
+            margin-bottom: 50px;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.3s forwards;
+            font-weight: 300;
+        }
+
+        .cover-slide .presenter {
+            font-size: 28px;
+            margin-top: 40px;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.6s forwards;
+        }
+
+        .cover-slide .date {
+            font-size: 24px;
+            margin-top: 20px;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.9s forwards;
+        }
+
+        .cover-slide .organization {
+            font-size: 40px;
+            margin-top: 60px;
+            font-weight: 700;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1.2s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Slide Header */
+        .slide-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #f59e0b 100%);
+            color: white;
+            padding: 35px 50px;
+            margin: -60px -80px 50px -80px;
+            font-size: 44px;
+            font-weight: 800;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .slide-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Content Animation */
+        .slide-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .slide-content > * {
+            animation: fadeInContent 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .slide-content > *:nth-child(1) { animation-delay: 0.1s; }
+        .slide-content > *:nth-child(2) { animation-delay: 0.2s; }
+        .slide-content > *:nth-child(3) { animation-delay: 0.3s; }
+        .slide-content > *:nth-child(4) { animation-delay: 0.4s; }
+        .slide-content > *:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes fadeInContent {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Icon Boxes */
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .icon-box {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .icon-box:hover {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 20px 60px rgba(245, 158, 11, 0.3);
+            border-color: #f59e0b;
+        }
+
+        .icon-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #1e3c72, #f59e0b);
+        }
+
+        .icon-box .icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: block;
+            animation: iconBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .icon-box h3 {
+            color: #1e3c72;
+            font-size: 22px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .icon-box p {
+            color: #64748b;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Feature Cards */
+        .feature-card {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.2);
+            border-left: 6px solid #f59e0b;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.3);
+        }
+
+        .feature-card .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .feature-card h3 {
+            color: #92400e;
+            font-size: 24px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            color: #78350f;
+            font-size: 18px;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+
+        /* Animated Flowchart */
+        .flowchart {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 40px;
+            border-radius: 25px;
+            margin: 30px 0;
+            position: relative;
+            border: 3px solid #cbd5e1;
+        }
+
+        .flowchart-step {
+            background: white;
+            padding: 30px;
+            margin: 30px 0;
+            border-radius: 18px;
+            border-left: 6px solid #f59e0b;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            position: relative;
+            transform: scale(0.9);
+            opacity: 0;
+            animation: popIn 0.5s ease forwards;
+            transition: all 0.3s;
+        }
+
+        .flowchart-step:hover {
+            transform: scale(1.02) translateX(10px);
+            box-shadow: 0 12px 32px rgba(245, 158, 11, 0.25);
+            border-left-color: #1e3c72;
+        }
+
+        .flowchart-step:nth-child(1) { animation-delay: 0.1s; }
+        .flowchart-step:nth-child(2) { animation-delay: 0.2s; }
+        .flowchart-step:nth-child(3) { animation-delay: 0.3s; }
+        .flowchart-step:nth-child(4) { animation-delay: 0.4s; }
+        .flowchart-step:nth-child(5) { animation-delay: 0.5s; }
+        .flowchart-step:nth-child(6) { animation-delay: 0.6s; }
+        .flowchart-step:nth-child(7) { animation-delay: 0.7s; }
+        .flowchart-step:nth-child(8) { animation-delay: 0.8s; }
+
+        @keyframes popIn {
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .flowchart-step::after {
+            content: "⬇";
+            position: absolute;
+            bottom: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 36px;
+            color: #f59e0b;
+            animation: arrowBounce 2s infinite;
+        }
+
+        @keyframes arrowBounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-15px); }
+        }
+
+        .flowchart-step:last-child::after {
+            content: "✅";
+            color: #10b981;
+            animation: checkPulse 2s infinite;
+        }
+
+        @keyframes checkPulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.4); }
+        }
+
+        .flowchart-step .step-icon {
+            font-size: 36px;
+            margin-right: 15px;
+            vertical-align: middle;
+        }
+
+        .flowchart-step h3 {
+            color: #1e3c72;
+            font-size: 26px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .flowchart-step p {
+            color: #475569;
+            font-size: 18px;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+
+        .flowchart-step .timeline {
+            background: #fef3c7;
+            padding: 8px 16px;
+            border-radius: 12px;
+            display: inline-block;
+            font-size: 16px;
+            color: #92400e;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 35px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(30, 60, 114, 0.3);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 4s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(245, 158, 11, 0.4);
+        }
+
+        .stat-card .icon {
+            font-size: 56px;
+            margin-bottom: 20px;
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-card p {
+            font-size: 16px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Two Column */
+        .two-column {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 35px;
+            margin-top: 30px;
+        }
+
+        .column-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            border: 2px solid #e2e8f0;
+        }
+
+        .column-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+            border-color: #f59e0b;
+        }
+
+        .column-card .icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .column-card h3 {
+            color: #1e3c72;
+            margin-bottom: 25px;
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        .column-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .column-card ul li {
+            padding: 12px 0;
+            padding-left: 35px;
+            position: relative;
+            font-size: 17px;
+            color: #475569;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .column-card ul li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #f59e0b;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        /* Navigation */
+        .navigation {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 25px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border: none;
+            padding: 20px 45px;
+            font-size: 19px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.5);
+            font-weight: 700;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .nav-btn:hover::before {
+            width: 350px;
+            height: 350px;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.7);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Slide Counter */
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 40px;
+            background: linear-gradient(135deg, rgba(30, 60, 114, 0.95), rgba(245, 158, 11, 0.95));
+            color: white;
+            padding: 18px 35px;
+            border-radius: 50px;
+            font-size: 22px;
+            z-index: 1000;
+            font-weight: 700;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 6px;
+            background: linear-gradient(90deg, #f59e0b 0%, #1e3c72 100%);
+            z-index: 1002;
+            transition: width 0.3s;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.8);
+        }
+
+        /* Thank You Slide */
+        .thankyou-slide {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #f59e0b 100%);
+            color: white;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .thankyou-slide h1 {
+            font-size: 90px;
+            font-weight: 800;
+            margin-bottom: 50px;
+            animation: thankyouPulse 2s ease infinite;
+        }
+
+        @keyframes thankyouPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        .contact-info {
+            margin-top: 60px;
+            font-size: 28px;
+            line-height: 2.2;
+        }
+
+        .contact-info div {
+            margin: 18px 0;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .contact-info div:nth-child(1) { animation-delay: 0.1s; }
+        .contact-info div:nth-child(2) { animation-delay: 0.2s; }
+        .contact-info div:nth-child(3) { animation-delay: 0.3s; }
+        .contact-info div:nth-child(4) { animation-delay: 0.4s; }
+        .contact-info div:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Highlight */
+        .highlight {
+            background: linear-gradient(120deg, #fbbf24 0%, #fbbf24 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 50%;
+            background-position: 0 90%;
+            padding: 0 10px;
+            font-weight: 700;
+            color: #1e3c72;
+        }
+
+        /* Loading Animation */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #f59e0b 100%);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: fadeOut 1s ease 2s forwards;
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        .loader {
+            width: 90px;
+            height: 90px;
+            border: 10px solid rgba(255,255,255,0.2);
+            border-top-color: #f59e0b;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 28px;
+            margin-top: 35px;
+            font-weight: 700;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slide { padding: 40px 30px; }
+            .slide-header { font-size: 28px; margin: -40px -30px 30px -30px; }
+            .cover-slide h1 { font-size: 48px; }
+            .two-column { grid-template-columns: 1fr; }
+            .logo-header { left: 20px; top: 10px; }
+            .logo-header img { height: 50px; }
+            .icon-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <div class="loader"></div>
+        <div class="loading-text">⚡ Loading Presentation...</div>
+    </div>
+
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="particles" id="particles"></div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Logo Header -->
+    <div class="logo-header">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAABYCAYAAAAl0yx2AAAACXBIWXMAAAsTAAALEwEAmpwYAAAMZklEQVR4nO3de5BUxR3G8V8vLrvAgrKXPBCQTSgEiUVUQkgwAakQL5GHRsUSU6nEVCyppFJaVirlIyWxVJKKjxQPNCoxvqJGjEYlGhU1alTEB4qiggq+AFkBWXZn7+0/TrPM7MzuzL3n9PdTtWVmZ3bOmd+e2Xv6NPTrdpFkREREJGl+0w0gIiIi+TGoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBjCoExERZQCDOhERUQYwqBMREWUAgzoREVEGMKgTERFlAIM6ERFRBvwPTxqTBnRw6NoAAAAASUVORK5CYII=" alt="BPKH Logo">
+    </div>
+
+    <div class="presentation-container">
+        <!-- Slide 1: Cover -->
+        <div class="slide cover-slide active">
+            <div class="content">
+                <h1>🔔 Whistleblowing System</h1>
+                <div class="subtitle">Transparansi Pengelolaan Keuangan Haji</div>
+                <div class="presenter">MS Hadianto, SE, Ak, QIA, CA, GRCP, GRCA, CGP, CCFA, CACP</div>
+                <div class="date">5 November 2025</div>
+                <div class="organization">BPKH RI</div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Agenda -->
+        <div class="slide">
+            <div class="slide-header">📋 Agenda</div>
+            <div class="slide-content">
+                <div class="icon-grid">
+                    <div class="icon-box">
+                        <span class="icon">📢</span>
+                        <h3>WBS Overview</h3>
+                        <p>Pengenalan sistem</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">⚖️</span>
+                        <h3>Dasar Hukum</h3>
+                        <p>Regulasi & landasan</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">🎯</span>
+                        <h3>Tujuan WBS</h3>
+                        <p>Objektif utama</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">📱</span>
+                        <h3>Media Pengaduan</h3>
+                        <p>Saluran pelaporan</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">🔐</span>
+                        <h3>Prinsip Penanganan</h3>
+                        <p>Pedoman proses</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">👥</span>
+                        <h3>Kewenangan</h3>
+                        <p>Struktur organisasi</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">🏛️</span>
+                        <h3>Dewan Kehormatan</h3>
+                        <p>Komposisi & tugas</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">📝</span>
+                        <h3>Metode Laporan</h3>
+                        <p>Cara melaporkan</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">🛡️</span>
+                        <h3>Hak & Kewajiban</h3>
+                        <p>Pelapor & terlapor</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">⚠️</span>
+                        <h3>Sanksi</h3>
+                        <p>Konsekuensi pelanggaran</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">🔄</span>
+                        <h3>Alur Pelaporan</h3>
+                        <p>Proses step-by-step</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">❌</span>
+                        <h3>Pengecualian</h3>
+                        <p>Yang tidak diproses</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: WBS -->
+        <div class="slide">
+            <div class="slide-header">📢 Whistleblowing System</div>
+            <div class="slide-content">
+                <div class="feature-card">
+                    <span class="icon">🔔</span>
+                    <h3>Sistem Pelaporan Pelanggaran</h3>
+                    <p>Platform <span class="highlight">aman dan terlindungi</span> untuk melaporkan dugaan pelanggaran dalam organisasi</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="icon">🎯</span>
+                        <h3>Transparansi</h3>
+                        <p>Akuntabilitas penuh</p>
+                    </div>
+                    <div class="stat-card">
+                        <span class="icon">🛡️</span>
+                        <h3>Perlindungan</h3>
+                        <p>Identitas aman</p>
+                    </div>
+                    <div class="stat-card">
+                        <span class="icon">⚡</span>
+                        <h3>Deteksi Dini</h3>
+                        <p>Cegah fraud</p>
+                    </div>
+                    <div class="stat-card">
+                        <span class="icon">💼</span>
+                        <h3>Integritas</h3>
+                        <p>Budaya jujur</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Dasar Hukum -->
+        <div class="slide">
+            <div class="slide-header">⚖️ Dasar Hukum</div>
+            <div class="slide-content">
+                <div class="feature-card">
+                    <span class="icon">📋</span>
+                    <h3>Per BPKH No. 3 / 2018</h3>
+                    <p>Kebijakan Kepatuhan, GCG, Kode Etik & Pakta Integritas</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="icon">📋</span>
+                    <h3>PKBP No. 12 / 2020</h3>
+                    <p>Mekanisme penanganan & penyelesaian pengaduan</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="icon">📋</span>
+                    <h3>PKBP No. 8 / 2022</h3>
+                    <p>Penyempurnaan sistem & prosedur whistleblowing</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Tujuan -->
+        <div class="slide">
+            <div class="slide-header">🎯 Tujuan WBS</div>
+            <div class="slide-content">
+                <div class="icon-grid">
+                    <div class="icon-box">
+                        <span class="icon">🔍</span>
+                        <h3>Deteksi Dini</h3>
+                        <p>Mencegah pelanggaran sebelum membesar</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">🛡️</span>
+                        <h3>Proteksi</h3>
+                        <p>Lindungi pelapor beritikad baik</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">✅</span>
+                        <h3>Tegakkan Etika</h3>
+                        <p>Pastikan kepatuhan kode etik</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">💎</span>
+                        <h3>Transparansi</h3>
+                        <p>Good Corporate Governance</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">🤝</span>
+                        <h3>Kepercayaan</h3>
+                        <p>Bangun trust stakeholder</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Media -->
+        <div class="slide">
+            <div class="slide-header">📱 Media Pengaduan</div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div class="column-card">
+                        <span class="icon">🌐</span>
+                        <h3>Online</h3>
+                        <ul>
+                            <li>Aplikasi WBS: www.wbs.bpkh.go.id</li>
+                            <li>Email: wbs@bpkh.go.id</li>
+                            <li>SMS 24/7</li>
+                        </ul>
+                    </div>
+
+                    <div class="column-card">
+                        <span class="icon">📞</span>
+                        <h3>Offline</h3>
+                        <ul>
+                            <li>Telepon hotline</li>
+                            <li>Surat tertulis</li>
+                            <li>Kotak pengaduan</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="icon">✓</span>
+                        <h3>Mudah Diakses</h3>
+                        <p>Multi-channel reporting</p>
+                    </div>
+                    <div class="stat-card">
+                        <span class="icon">🔒</span>
+                        <h3>Kerahasiaan</h3>
+                        <p>Identitas terjaga</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Prinsip -->
+        <div class="slide">
+            <div class="slide-header">🔐 Prinsip Penanganan</div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div class="column-card">
+                        <span class="icon">⚖️</span>
+                        <h3>Fundamental</h3>
+                        <ul>
+                            <li>Keadilan untuk semua</li>
+                            <li>Objektivitas berbasis fakta</li>
+                            <li>Independensi penuh</li>
+                            <li>Transparansi proses</li>
+                        </ul>
+                    </div>
+
+                    <div class="column-card">
+                        <span class="icon">🛡️</span>
+                        <h3>Perlindungan</h3>
+                        <ul>
+                            <li>Kerahasiaan terjamin</li>
+                            <li>Anti-pembalasan</li>
+                            <li>Profesional & kompeten</li>
+                            <li>Tepat waktu</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Kewenangan -->
+        <div class="slide">
+            <div class="slide-header">👥 Kewenangan</div>
+            <div class="slide-content">
+                <div class="feature-card">
+                    <span class="icon">🔍</span>
+                    <h3>Dewan Pengawas</h3>
+                    <p>Penanganan pengaduan • Fungsi pengawasan • Delegasi ke Komite Audit</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="icon">⚙️</span>
+                    <h3>Badan Pelaksana</h3>
+                    <p>Penyelesaian pengaduan • Delegasi ke Bidang Audit Internal</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="icon">✅</span>
+                        <h3>Checks & Balances</h3>
+                        <p>Sistem pengawasan berlapis</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Dewan Kehormatan -->
+        <div class="slide">
+            <div class="slide-header">🏛️ Dewan Kehormatan Kode Etik</div>
+            <div class="slide-content">
+                <div class="feature-card">
+                    <span class="icon">📖</span>
+                    <h3>Definisi</h3>
+                    <p>Menindaklanjuti laporan WBS terhadap <span class="highlight">Anggota Badan Pelaksana & Dewan Pengawas</span></p>
+                </div>
+
+                <div class="two-column">
+                    <div class="column-card">
+                        <span class="icon">👥</span>
+                        <h3>Komposisi</h3>
+                        <ul>
+                            <li>Min 7 orang (5 internal)</li>
+                            <li>Min 3 orang (eksternal)</li>
+                        </ul>
+                    </div>
+
+                    <div class="column-card">
+                        <span class="icon">⚖️</span>
+                        <h3>Putusan</h3>
+                        <ul>
+                            <li>✓ Terbukti melanggar</li>
+                            <li>✗ Tidak terbukti</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Metode -->
+        <div class="slide">
+            <div class="slide-header">📝 Metode Laporan</div>
+            <div class="slide-content">
+                <div class="icon-grid">
+                    <div class="icon-box">
+                        <span class="icon">📋</span>
+                        <h3>Persiapan</h3>
+                        <p>Kumpulkan bukti & data 5W+1H</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">📤</span>
+                        <h3>Penyampaian</h3>
+                        <p>Pilih media, sampaikan lengkap</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">🔄</span>
+                        <h3>Tindak Lanjut</h3>
+                        <p>Verifikasi & investigasi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Hak -->
+        <div class="slide">
+            <div class="slide-header">🛡️ Hak Pelapor & Terlapor</div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div class="column-card">
+                        <span class="icon">👤</span>
+                        <h3>Pelapor</h3>
+                        <ul>
+                            <li>Perlindungan identitas</li>
+                            <li>Bebas beri keterangan</li>
+                            <li>Info tahapan laporan</li>
+                            <li>Perlakuan setara</li>
+                            <li>Copy BAP</li>
+                        </ul>
+                    </div>
+
+                    <div class="column-card">
+                        <span class="icon">⚖️</span>
+                        <h3>Terlapor</h3>
+                        <ul>
+                            <li>Perlindungan identitas</li>
+                            <li>Hak pembuktian</li>
+                            <li>Bebas beri keterangan</li>
+                            <li>Perlakuan setara</li>
+                            <li>Rehabilitasi jika tidak terbukti</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Sanksi -->
+        <div class="slide">
+            <div class="slide-header">⚠️ Sanksi</div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div class="column-card">
+                        <span class="icon">📋</span>
+                        <h3>Administratif</h3>
+                        <ul>
+                            <li>Teguran lisan/tertulis</li>
+                            <li>Pemberhentian sementara</li>
+                            <li>Penurunan jabatan</li>
+                        </ul>
+                    </div>
+
+                    <div class="column-card">
+                        <span class="icon">⚖️</span>
+                        <h3>Lainnya</h3>
+                        <ul>
+                            <li>Pemberhentian tetap</li>
+                            <li>Pencabutan fasilitas</li>
+                            <li>Penundaan kenaikan</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <span class="icon">⚠️</span>
+                    <h3>Catatan Penting</h3>
+                    <p>Sanksi <span class="highlight">tidak menghentikan proses hukum</span> jika terjadi tindak pidana</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Alur -->
+        <div class="slide">
+            <div class="slide-header">🔄 Alur Pelaporan</div>
+            <div class="slide-content">
+                <div class="flowchart">
+                    <div class="flowchart-step">
+                        <span class="step-icon">📥</span>
+                        <h3>Laporan Masuk</h3>
+                        <p>Pelapor submit via media yang tersedia</p>
+                        <span class="timeline">⏱️ Verifikasi 5W+1H</span>
+                    </div>
+
+                    <div class="flowchart-step">
+                        <span class="step-icon">✅</span>
+                        <h3>Validasi</h3>
+                        <p>Unit Penanganan verifikasi kelengkapan</p>
+                        <span class="timeline">⏱️ Max 5 hari kerja</span>
+                    </div>
+
+                    <div class="flowchart-step">
+                        <span class="step-icon">🔍</span>
+                        <h3>Klasifikasi</h3>
+                        <p>Pengelompokan jenis pelanggaran</p>
+                        <span class="timeline">⏱️ 3 hari kerja</span>
+                    </div>
+
+                    <div class="flowchart-step">
+                        <span class="step-icon">👥</span>
+                        <h3>Pemeriksaan</h3>
+                        <p>Audit Internal atau DK Kode Etik</p>
+                        <span class="timeline">⏱️ 20 hari kerja</span>
+                    </div>
+
+                    <div class="flowchart-step">
+                        <span class="step-icon">📊</span>
+                        <h3>Laporan Hasil</h3>
+                        <p>Input hasil pemeriksaan ke WBS</p>
+                        <span class="timeline">⏱️ Max 2 hari kerja</span>
+                    </div>
+
+                    <div class="flowchart-step">
+                        <span class="step-icon">📝</span>
+                        <h3>Eskalasi</h3>
+                        <p>Laporan ke Badan Pelaksana</p>
+                    </div>
+
+                    <div class="flowchart-step">
+                        <span class="step-icon">⚖️</span>
+                        <h3>Keputusan</h3>
+                        <p>BP mengambil keputusan final</p>
+                    </div>
+
+                    <div class="flowchart-step">
+                        <span class="step-icon">💾</span>
+                        <h3>Dokumentasi</h3>
+                        <p>Input hasil keputusan ke sistem</p>
+                    </div>
+                </div>
+            </div>
+        </slide>
+
+        <!-- Slide 14: Pengecualian -->
+        <div class="slide">
+            <div class="slide-header">❌ Pengecualian</div>
+            <div class="slide-content">
+                <div class="icon-grid">
+                    <div class="icon-box">
+                        <span class="icon">📄</span>
+                        <h3>Data Tidak Memadai</h3>
+                        <p>Tidak ada bukti cukup</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">❓</span>
+                        <h3>Substansi Tidak Jelas</h3>
+                        <p>Laporan tidak spesifik</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">⚖️</span>
+                        <h3>Sudah Ditangani</h3>
+                        <p>Proses hukum berjalan</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">🏛️</span>
+                        <h3>Putusan Pengadilan</h3>
+                        <p>Bukan kewenangan WBS</p>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">🚫</span>
+                        <h3>Luar Yurisdiksi</h3>
+                        <p>Di luar BPKH</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Statistik -->
+        <div class="slide">
+            <div class="slide-header">📊 Rekapitulasi</div>
+            <div class="slide-content">
+                <div class="feature-card">
+                    <span class="icon">📈</span>
+                    <h3>Periode 2021 - 2024</h3>
+                    <p>Sistem WBS BPKH telah berjalan efektif</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="icon">📈</span>
+                        <h3>Kesadaran Meningkat</h3>
+                        <p>Lebih banyak laporan</p>
+                    </div>
+                    <div class="stat-card">
+                        <span class="icon">⚡</span>
+                        <h3>Proses Cepat</h3>
+                        <p>Tepat waktu</p>
+                    </div>
+                    <div class="stat-card">
+                        <span class="icon">🛡️</span>
+                        <h3>Proteksi Efektif</h3>
+                        <p>Pelapor terlindungi</p>
+                    </div>
+                    <div class="stat-card">
+                        <span class="icon">💎</span>
+                        <h3>Integritas Kuat</h3>
+                        <p>Budaya compliance</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Thank You -->
+        <div class="slide thankyou-slide">
+            <h1>🙏 Terima Kasih</h1>
+            <div class="contact-info">
+                <div><strong>BPKH RI</strong></div>
+                <div>🌐 www.bpkh.go.id</div>
+                <div>📧 wbs@bpkh.go.id</div>
+                <div>🌐 www.wbs.bpkh.go.id</div>
+                <div style="margin-top: 30px;">
+                    <div>📱 @BPKHRI | 📘 BPKHRI | 📸 BPKH RI</div>
+                </div>
+            </div>
+            <div style="margin-top: 60px; font-size: 22px; opacity: 0.8;">
+                <em>Transparansi Pengelolaan Keuangan Haji</em>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-counter">
+        <span id="currentSlide">1</span> / <span id="totalSlides">16</span>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="previousSlide()">← Prev</button>
+        <button class="nav-btn" id="nextBtn" onclick="nextSlide()">Next →</button>
+    </div>
+
+    <script>
+        // Create particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 40; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.width = particle.style.height = Math.random() * 12 + 5 + 'px';
+            particle.style.animationDuration = Math.random() * 10 + 10 + 's';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const progressBar = document.getElementById('progressBar');
+
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function updateProgress() {
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            progressBar.style.width = progress + '%';
+        }
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            slides[currentSlide].classList.add('prev');
+            
+            currentSlide = n;
+            if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
+            if (currentSlide < 0) currentSlide = 0;
+            
+            slides.forEach(slide => slide.classList.remove('active', 'prev'));
+            slides[currentSlide].classList.add('active');
+            
+            document.getElementById('currentSlide').textContent = currentSlide + 1;
+            updateProgress();
+            
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                e.preventDefault();
+                previousSlide();
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                showSlide(0);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                showSlide(totalSlides - 1);
+            }
+        });
+
+        // Touch support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) nextSlide();
+            if (touchEndX > touchStartX + 50) previousSlide();
+        }
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
